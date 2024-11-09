@@ -59,6 +59,17 @@ export const cleanupFiles = async (
   }
 };
 
+export const removeSpaces = (entity: string) => {
+  return entity.replace(/\s+/g, "");
+};
+
+export const uniqueAgentName = (agentName: string, email: string) => {
+  const emailUsername = email.split("@")[0];
+  const emailDomain = email.split("@")[1].split(".")[0];
+  const agentNameWithoutSpaces = removeSpaces(agentName);
+  return `${agentNameWithoutSpaces}_${emailUsername}_${emailDomain}`;
+};
+
 export interface CustomRequest extends Request {
   user?: userType;
   file?: Express.Multer.File;
@@ -66,3 +77,13 @@ export interface CustomRequest extends Request {
     | Express.Multer.File[]
     | { [fieldname: string]: Express.Multer.File[] };
 }
+
+export interface PassportRequest extends Request {
+  authMethod?: string;
+  passportInternalErr?: Error | null;
+  passportauthErr?: any;
+}
+
+export const combineDocs = (docs: any) => {
+  return docs.map((doc: any) => doc.pageContent).join("\n\n");
+};

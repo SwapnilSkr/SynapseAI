@@ -23,7 +23,7 @@ const multiFileDataExtractor = async (filepathsArray: string[]) => {
 
 export const extractMultiFileData = async (
   filepathsArray: string[],
-  collectionName: string
+  collectionName?: string
 ) => {
   console.log(filepathsArray);
   const docs = (await multiFileDataExtractor(filepathsArray)) as unknown as {
@@ -38,12 +38,13 @@ export const extractMultiFileData = async (
     chunkOverlap: 50,
   });
   const splittedTextOutput = await splitter.createDocuments(docsToStringArray);
-  //   const outputArray = splittedTextOutput?.map(
-  //     (doc: { pageContent: string }) => doc.pageContent
-  //   );
-  await uploadDocsToDatabase(
-    splittedTextOutput as unknown as [],
-    collectionName
-  );
+  if (collectionName) {
+    await uploadDocsToDatabase(
+      splittedTextOutput as unknown as [],
+      collectionName
+    );
+  } else {
+    return splittedTextOutput;
+  }
   console.log("data successfully uploaded");
 };

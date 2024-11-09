@@ -15,7 +15,7 @@ dotenv.config();
 const connectionString = process.env.DATABASE_URL as string;
 const sql = postgres(connectionString!, {
   ssl: {
-    rejectUnauthorized: false, // Allows self-signed certificates
+    rejectUnauthorized: false,
   },
   prepare: false,
 });
@@ -42,7 +42,7 @@ export const sbApiKey = process.env.SUPABASE_API_KEY as string;
 export const sbUrl = process.env.SUPABASE_PROJECT_URL as string;
 export const openAIApiKey = process.env.OPENAI_API_KEY as string;
 export const sbClient = createClient(sbUrl, sbApiKey);
-const nativeSupabaseClient = new Client({
+export const nativeSupabaseClient = new Client({
   connectionString:
     "postgresql://postgres.eojvbyorcbukxnswockh:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres",
 });
@@ -122,9 +122,22 @@ export const createTable = async (tableName: string) => {
     await sql.unsafe(createTableSQL);
     console.log(`Table "${tableName}" created successfully.`);
   } catch (error) {
-    console.error("Error creating table:", error);
+    console.error("Error creating table or enabling RLS:", error);
   }
 };
+
+export const enableRLS = async (tableName: string) => {
+  const enableRLSSQL = `
+    ALTER TABLE ${tableName} ENABLE ROW LEVEL SECURITY;
+  `;
+  try {
+    await sql.unsafe(enableRLSSQL);
+    console.log(`Table "${tableName}" rls enabled successfully.`);
+  } catch (error) {
+    console.error("Error enabling RLS:", error);
+  }
+};
+
 export const renameTable = async (
   oldTableName: string,
   newTableName: string
@@ -206,3 +219,4 @@ export const dropMatchFunction = async (tableName: string) => {
     console.error("Error deleting match function:", error);
   }
 };
+export const AssemblyAIKey = process.env.ASSEMBLY_AI_KEY as string;

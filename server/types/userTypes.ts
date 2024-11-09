@@ -6,3 +6,10 @@ export type userType = {
   displayName?: mongoStringType;
   password?: mongoStringType;
 };
+
+export interface CustomUser extends Express.User {
+  _id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+}

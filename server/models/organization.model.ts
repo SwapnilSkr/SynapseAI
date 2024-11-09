@@ -1,25 +1,19 @@
 import mongoose from "mongoose";
-import { mongoId, mongoString } from "../types/mongooseTypes";
+import { mongoString } from "../types/mongooseTypes";
 
-const UserSchema = new mongoose.Schema(
+const OrganizationSchema = new mongoose.Schema(
   {
-    googleId: {
-      type: mongoString,
-      required: false,
-      default: "",
-    },
-    organizationId: {
-      type: mongoId,
-      ref: "Organization",
-      required: false,
-      default: null,
-    },
-    email: {
+    baseEmail: {
       type: mongoString,
       required: true,
       unique: true,
     },
-    firstName: {
+    domain: {
+      type: mongoString,
+      required: true,
+      unique: true,
+    },
+    companyName: {
       type: mongoString,
       required: false,
     },
@@ -37,4 +31,4 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-export const User = mongoose.model("User", UserSchema);
+export const User = mongoose.model("Organization", OrganizationSchema);

@@ -3,6 +3,7 @@ import {
   createTable,
   dropMatchFunction,
   dropTable,
+  enableRLS,
   getAstraConfig,
   getSupabaseVectorStore,
   openAIApiKey,
@@ -31,6 +32,8 @@ export const uploadDocsToDatabase = async (
       queryName: "match_dynamic",
     }
   );
+
+  await enableRLS(collectionName);
 
   console.log("checkpoint 2");
 

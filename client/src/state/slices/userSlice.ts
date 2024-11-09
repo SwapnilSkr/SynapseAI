@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import { userRegisterAction } from "../reducers/userReducer";
 
@@ -10,12 +9,7 @@ interface UserState {
   serverErr?: string | undefined;
 }
 
-const localStorageUser = localStorage.getItem("userInfo");
-const userInfo = localStorageUser ? JSON.parse(localStorageUser) : null;
-
-const initialState: UserState = {
-  user: userInfo,
-};
+const initialState: UserState = {};
 
 export const userSlice = createSlice({
   name: "user",

@@ -1,25 +1,18 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { User } from "@/types/entity";
+import { authResponse } from "@/types/response";
+import { createAsyncThunk, SerializedError } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
-interface SerializedError {
-  response?: any;
-  message?: string;
-  name?: string;
-  stack?: string;
-  code?: string;
-}
-
 export const userRegisterAction = createAsyncThunk<
-  any,
-  any,
+  authResponse,
+  User,
   { rejectValue: SerializedError }
 >("users/register", async (user, { rejectWithValue }) => {
   try {
-    const { data } = await axios.post<any>(
+    const { data } = await axios.post<authResponse>(
       `${import.meta.env.VITE_REACT_SERVER_URL}/api/v1/auth/register`,
       user
     );
-    localStorage.setItem("userInfo", JSON.stringify(data));
     return data;
   } catch (error) {
     if (!axios.isAxiosError(error)) {

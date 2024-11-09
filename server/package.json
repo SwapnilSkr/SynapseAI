@@ -34,6 +34,7 @@
     "@langchain/openai": "^0.3.0",
     "@supabase/supabase-js": "^2.45.4",
     "@types/pg": "^8.11.10",
+    "assemblyai": "^4.7.1",
     "aws-sdk": "^2.1691.0",
     "bcrypt": "^5.1.1",
     "connect-mongo": "^5.1.0",
