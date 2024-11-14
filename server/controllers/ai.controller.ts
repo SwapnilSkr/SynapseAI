@@ -15,7 +15,7 @@ import {
 import { obtainRetrieverOfExistingVectorDb } from "../utils/uploadOrGetVectorDb";
 import { extractMultiFileData } from "../utils/multiFileLoader";
 import { Agent } from "../models/agent.model";
-import { s3Client } from "../utils/awsS3";
+import { s3Client } from "../utils/aws";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { Chat } from "../models/chat.model";
 import { generateChatName } from "../utils/generateChatName";

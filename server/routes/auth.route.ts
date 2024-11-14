@@ -3,6 +3,7 @@ import {
   loginUser,
   logoutUser,
   registerUser,
+  verifyEmail,
 } from "../controllers/auth.controller";
 import { passport as googlePassport } from "../strategies/google.strategy";
 import {
@@ -14,6 +15,7 @@ const router = Router();
 
 router.post("/register", passportSignUpMiddleware, registerUser);
 router.post("/login", passportLoginMiddleware, loginUser);
+router.get("/verify-email", verifyEmail);
 router.get(
   "/google",
   googlePassport.authenticate("google", {

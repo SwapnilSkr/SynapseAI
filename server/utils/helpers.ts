@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import fs from "fs";
 import { userType } from "../types/userTypes";
 import { User } from "../models/user.model";
@@ -81,9 +82,22 @@ export interface CustomRequest extends Request {
 export interface PassportRequest extends Request {
   authMethod?: string;
   passportInternalErr?: Error | null;
-  passportauthErr?: any;
+  passportAuthErr?: any;
+  creatorUser?: Express.User;
 }
 
 export const combineDocs = (docs: any) => {
   return docs.map((doc: any) => doc.pageContent).join("\n\n");
+};
+
+export const generateToken = () => {
+  const token = crypto.randomBytes(20).toString("hex");
+
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const tokenExpires = new Date(Date.now() + 10 * 60 * 1000);
+  return {
+    token: hashedToken,
+    tokenExpires,
+  };
 };

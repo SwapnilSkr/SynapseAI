@@ -7,6 +7,8 @@ import {
 import HomePage from "./pages/HomePage";
 import Register from "./pages/Auth/Register";
 import { Login } from "./pages/Auth/Login";
+import DashboardHome from "./pages/Dashboard/DashboardHome";
+import VerificationStatus from "./pages/Auth/VerificationStatus";
 
 // 3️⃣ Router singleton created
 const router = createBrowserRouter([
@@ -16,6 +18,14 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
+      { path: "verification-status", element: <VerificationStatus /> },
+    ],
+  },
+  {
+    path: "/dashboard/*",
+    children: [
+      { index: true, element: <DashboardHome /> },
+      { path: "*", element: <BlogApp /> },
     ],
   },
   {

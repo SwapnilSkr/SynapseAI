@@ -1,15 +1,27 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "@/state/hooks";
+import { userRegisterAction } from "@/state/reducers/userReducer";
 import { User } from "@/types/entity";
+import { Button } from "@/components/ui/button";
+import { selectUser } from "@/state/slices/userSlice";
 
 export default function Register() {
-  const [user, setUser] = useState<User>({
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector(selectUser);
+  const router = useNavigate();
+  const [registeredUser, setUser] = useState<User>({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      router("/");
+    }
+  }, [user, router]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -18,9 +30,19 @@ export default function Register() {
     });
   };
 
+  const resetForm = () => {
+    setUser({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    });
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("user", user);
+    await dispatch(userRegisterAction(registeredUser));
+    resetForm();
   };
 
   return (
@@ -51,7 +73,7 @@ export default function Register() {
                   type="text"
                   name="firstName"
                   id="firstName"
-                  value={user.firstName}
+                  value={registeredUser.firstName}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-flowPrimary-600 focus:border-flowPrimary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="John"
@@ -66,7 +88,7 @@ export default function Register() {
                   type="text"
                   name="lastName"
                   id="lastName"
-                  value={user.lastName}
+                  value={registeredUser.lastName}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-flowPrimary-600 focus:border-flowPrimary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Doe"
@@ -81,7 +103,7 @@ export default function Register() {
                   type="email"
                   name="email"
                   id="email"
-                  value={user.email}
+                  value={registeredUser.email}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-flowPrimary-600 focus:border-flowPrimary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
@@ -97,7 +119,7 @@ export default function Register() {
                   name="password"
                   id="password"
                   placeholder="••••••••"
-                  value={user.password}
+                  value={registeredUser.password}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-flowPrimary-600 focus:border-flowPrimary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required

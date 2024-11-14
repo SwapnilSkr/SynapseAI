@@ -1,6 +1,9 @@
 import { NavLink } from "react-router-dom";
+import { useAppSelector } from "@/state/hooks";
+import { selectUser } from "@/state/slices/userSlice";
 
 export default function Navbar() {
+  const { user } = useAppSelector(selectUser);
   return (
     <header>
       <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
@@ -16,18 +19,33 @@ export default function Navbar() {
             </span>
           </a>
           <div className="flex items-center lg:order-2">
-            <NavLink
-              to="/login"
-              className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
-            >
-              Log in
-            </NavLink>
-            <NavLink
-              to="/register"
-              className="text-white bg-flowPrimary-700 hover:bg-flowPrimary-800 focus:ring-4 focus:ring-flowPrimary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-flowPrimary-600 dark:hover:bg-flowPrimary-700 focus:outline-none dark:focus:ring-flowPrimary-800"
-            >
-              Get started
-            </NavLink>
+            {user ? (
+              <NavLink
+                to="/dashboard"
+                className="text-white bg-flowPrimary-700 hover:bg-flowPrimary-800 focus:ring-4 focus:ring-flowPrimary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-flowPrimary-600 dark:hover:bg-flowPrimary-700 focus:outline-none dark:focus:ring-flowPrimary-800"
+              >
+                Dashboard
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/login"
+                className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+              >
+                Log in
+              </NavLink>
+            )}
+            {user ? (
+              <button className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                Log Out
+              </button>
+            ) : (
+              <NavLink
+                to="/register"
+                className="text-white bg-flowPrimary-700 hover:bg-flowPrimary-800 focus:ring-4 focus:ring-flowPrimary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-flowPrimary-600 dark:hover:bg-flowPrimary-700 focus:outline-none dark:focus:ring-flowPrimary-800"
+              >
+                Get started
+              </NavLink>
+            )}
             <button
               data-collapse-toggle="mobile-menu-2"
               type="button"

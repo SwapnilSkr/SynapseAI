@@ -1,19 +1,48 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { PassportRequest } from "../utils/helpers";
+import { generateToken, PassportRequest } from "../utils/helpers";
 import { CustomUser } from "../types/userTypes";
+import { User } from "../models/user.model";
+import registrationTemplate from "../email-templates/registration.template";
+import mg from "../utils/mailgun";
 
 export const registerUser = async (req: PassportRequest, res: Response) => {
   try {
-    const user = req.user as CustomUser;
-    const { passportInternalErr, passportauthErr } = req;
+    const user = req.creatorUser as CustomUser;
+    const { passportInternalErr, passportAuthErr } = req;
 
-    if (passportauthErr || passportInternalErr) {
+    if (passportAuthErr || passportInternalErr) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
         message: "Registration failed",
-        error: passportauthErr || passportInternalErr,
+        error: passportAuthErr || passportInternalErr,
       });
     }
+
+    const createdUser = await User.findById(user._id);
+    if (!createdUser) {
+      console.log("User not found", user._id);
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "User not found",
+      });
+    }
+    const { token, tokenExpires } = generateToken();
+    createdUser.verificationToken = token;
+    createdUser.verificationTokenExpires = tokenExpires;
+    createdUser.save();
+
+    const verificationLink = `${process.env.FRONT_END_URL}/verify-email?token=${token}`;
+    const emailTemplate = registrationTemplate(verificationLink);
+
+    mg.messages
+      .create(process.env.MAILGUN_SANDBOX_DOMAIN as string, {
+        from: process.env.VERIFIED_EMAIL,
+        to: [user.email],
+        subject: "Email Verification",
+        text: "Verify your Email!",
+        html: emailTemplate,
+      })
+      .then((msg) => console.log(msg))
+      .catch((err) => console.error(err));
 
     return res.status(StatusCodes.OK).json({
       message: "success",
@@ -27,15 +56,50 @@ export const registerUser = async (req: PassportRequest, res: Response) => {
   }
 };
 
+export const verifyEmail = async (req: PassportRequest, res: Response) => {
+  try {
+    const { token } = req.query;
+    if (!token) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Token not found",
+      });
+    }
+
+    const user = await User.findOne({
+      verificationToken: token,
+      verificationTokenExpires: { $gt: Date.now() },
+    });
+    if (!user) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Invalid or expired token",
+      });
+    }
+
+    user.verified = true;
+    user.verificationToken = "";
+    user.verificationTokenExpires = undefined;
+    await user.save();
+
+    return res.status(StatusCodes.OK).json({
+      message: "Email verified successfully",
+    });
+  } catch (error: any | unknown) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Email verification failed",
+      error: error.message,
+    });
+  }
+};
+
 export const loginUser = async (req: PassportRequest, res: Response) => {
   try {
-    const user = req.user as CustomUser;
-    const { passportInternalErr, passportauthErr } = req;
+    const user = req.creatorUser as CustomUser;
+    const { passportInternalErr, passportAuthErr } = req;
 
-    if (passportauthErr || passportInternalErr) {
+    if (passportAuthErr || passportInternalErr) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
         message: "Authentication failed",
-        error: passportauthErr || passportInternalErr,
+        error: passportAuthErr || passportInternalErr,
       });
     }
 
@@ -53,8 +117,8 @@ export const loginUser = async (req: PassportRequest, res: Response) => {
 
 export const getUserInSession = async (req: PassportRequest, res: Response) => {
   try {
-    const { user } = req;
-    if (!user) {
+    const { creatorUser } = req;
+    if (!creatorUser) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
         message: "failed",
         error: "No user found",
@@ -62,7 +126,7 @@ export const getUserInSession = async (req: PassportRequest, res: Response) => {
     } else {
       return res.status(StatusCodes.OK).json({
         message: "success",
-        user,
+        user: creatorUser,
       });
     }
   } catch (error: any | unknown) {

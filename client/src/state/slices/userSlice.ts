@@ -4,7 +4,10 @@ import { userRegisterAction } from "../reducers/userReducer";
 
 interface UserState {
   loading?: boolean;
-  user?: any;
+  user?: {
+    id: string;
+    email: string;
+  };
   appErr?: string | undefined;
   serverErr?: string | undefined;
 }
@@ -23,7 +26,7 @@ export const userSlice = createSlice({
     });
     builder.addCase(userRegisterAction.fulfilled, (state, action) => {
       state.loading = false;
-      state.user = action.payload;
+      state.user = action.payload?.user;
       state.appErr = undefined;
       state.serverErr = undefined;
     });

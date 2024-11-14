@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
-import { mongoId, mongoString } from "../types/mongooseTypes";
+import {
+  mongoId,
+  mongoString,
+  mongoBoolean,
+  mongoDate,
+} from "../types/mongooseTypes";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -31,6 +36,20 @@ const UserSchema = new mongoose.Schema(
       type: mongoString,
       required: false,
     },
+    verified: {
+      type: mongoBoolean,
+      default: false,
+    },
+    verificationToken: {
+      type: mongoString,
+      default: "",
+    },
+    verificationTokenExpires: mongoDate,
+    passwordResetToken: {
+      type: mongoString,
+      default: "",
+    },
+    passwordResetExpires: mongoDate,
   },
   {
     timestamps: true,

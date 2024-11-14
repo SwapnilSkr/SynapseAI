@@ -22,6 +22,7 @@ mongoose
 
 //middlewares setup
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
@@ -40,6 +41,12 @@ app.use(
 app.use(cors());
 app.use(passport.initialize());
 app.use(passport.session());
+
+//logging incoming requests
+app.use((req, res, next) => {
+  console.log(`Incoming Request: ${req.method} ${req.url}`);
+  next();
+});
 
 //routes setup
 app.use("/api/v1/auth", authRoutes);

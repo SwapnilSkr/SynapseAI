@@ -15,11 +15,11 @@ export const passportLoginMiddleware = async (
         return next();
       }
       if (!user) {
-        req.passportauthErr = info.message;
+        req.passportAuthErr = info.message;
         return next();
       }
 
-      req.user = user;
+      req.creatorUser = user;
 
       req.login(user, (loginErr) => {
         if (loginErr) {
@@ -45,11 +45,11 @@ export const passportSignUpMiddleware = async (
         return next();
       }
       if (!user) {
-        req.passportauthErr = info.message;
+        req.passportAuthErr = info.message;
         return next();
       }
 
-      req.user = user;
+      req.creatorUser = user;
 
       req.login(user, (loginErr) => {
         if (loginErr) {
