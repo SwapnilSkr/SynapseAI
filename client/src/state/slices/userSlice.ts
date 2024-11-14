@@ -1,12 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import { userRegisterAction } from "../reducers/userReducer";
+import {
+  getUserInSessionAction,
+  userRegisterAction,
+} from "../reducers/userReducer";
 
 interface UserState {
   loading?: boolean;
   user?: {
     id: string;
-    email: string;
+    verified: boolean;
   };
   appErr?: string | undefined;
   serverErr?: string | undefined;
@@ -19,6 +22,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // userRegisterAction
     builder.addCase(userRegisterAction.pending, (state) => {
       state.loading = true;
       state.appErr = undefined;
@@ -31,6 +35,23 @@ export const userSlice = createSlice({
       state.serverErr = undefined;
     });
     builder.addCase(userRegisterAction.rejected, (state, action) => {
+      state.loading = false;
+      state.appErr = action.payload?.message;
+      state.serverErr = action.error?.message;
+    });
+    // getUserInSessionAction
+    builder.addCase(getUserInSessionAction.pending, (state) => {
+      state.loading = true;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(getUserInSessionAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload?.user;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(getUserInSessionAction.rejected, (state, action) => {
       state.loading = false;
       state.appErr = action.payload?.message;
       state.serverErr = action.error?.message;

@@ -19,7 +19,7 @@ export const passportLoginMiddleware = async (
         return next();
       }
 
-      req.creatorUser = user;
+      req.user = user;
 
       req.login(user, (loginErr) => {
         if (loginErr) {
@@ -49,7 +49,7 @@ export const passportSignUpMiddleware = async (
         return next();
       }
 
-      req.creatorUser = user;
+      req.user = user;
 
       req.login(user, (loginErr) => {
         if (loginErr) {

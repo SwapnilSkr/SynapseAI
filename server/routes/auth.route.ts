@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  getUserInSession,
   loginUser,
   logoutUser,
   registerUser,
@@ -28,6 +29,7 @@ router.get(
   googlePassport.authenticate("google", { failureRedirect: "/login" }),
   loginUser
 );
+router.get("/get-user-in-session", getUserInSession);
 router.get("/logout", logoutUser);
 
 export default router;

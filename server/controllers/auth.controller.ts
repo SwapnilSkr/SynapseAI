@@ -8,7 +8,7 @@ import mg from "../utils/mailgun";
 
 export const registerUser = async (req: PassportRequest, res: Response) => {
   try {
-    const user = req.creatorUser as CustomUser;
+    const user = req.user as CustomUser;
     const { passportInternalErr, passportAuthErr } = req;
 
     if (passportAuthErr || passportInternalErr) {
@@ -33,20 +33,24 @@ export const registerUser = async (req: PassportRequest, res: Response) => {
     const verificationLink = `${process.env.FRONT_END_URL}/verify-email?token=${token}`;
     const emailTemplate = registrationTemplate(verificationLink);
 
-    mg.messages
-      .create(process.env.MAILGUN_SANDBOX_DOMAIN as string, {
-        from: process.env.VERIFIED_EMAIL,
-        to: [user.email],
-        subject: "Email Verification",
-        text: "Verify your Email!",
-        html: emailTemplate,
-      })
-      .then((msg) => console.log(msg))
-      .catch((err) => console.error(err));
+    // mg.messages
+    //   .create(process.env.MAILGUN_SANDBOX_DOMAIN as string, {
+    //     from: process.env.VERIFIED_EMAIL,
+    //     to: [user.email],
+    //     subject: "Email Verification",
+    //     text: "Verify your Email!",
+    //     html: emailTemplate,
+    //   })
+    //   .then((msg) => console.log(msg))
+    //   .catch((err) => console.error(err));
 
+    console.log("request", req.session);
     return res.status(StatusCodes.OK).json({
       message: "success",
-      user: { id: user._id, email: user.email },
+      user: {
+        id: user._id,
+        verified: user.verified,
+      },
     });
   } catch (error: any | unknown) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -93,7 +97,7 @@ export const verifyEmail = async (req: PassportRequest, res: Response) => {
 
 export const loginUser = async (req: PassportRequest, res: Response) => {
   try {
-    const user = req.creatorUser as CustomUser;
+    const user = req.user as CustomUser;
     const { passportInternalErr, passportAuthErr } = req;
 
     if (passportAuthErr || passportInternalErr) {
@@ -105,7 +109,10 @@ export const loginUser = async (req: PassportRequest, res: Response) => {
 
     return res.status(StatusCodes.OK).json({
       message: "success",
-      user: { id: user._id, email: user.email },
+      user: {
+        id: user._id,
+        verified: user.verified,
+      },
     });
   } catch (error: any | unknown) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -117,8 +124,8 @@ export const loginUser = async (req: PassportRequest, res: Response) => {
 
 export const getUserInSession = async (req: PassportRequest, res: Response) => {
   try {
-    const { creatorUser } = req;
-    if (!creatorUser) {
+    const user = req.user as CustomUser;
+    if (!user) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
         message: "failed",
         error: "No user found",
@@ -126,12 +133,15 @@ export const getUserInSession = async (req: PassportRequest, res: Response) => {
     } else {
       return res.status(StatusCodes.OK).json({
         message: "success",
-        user: creatorUser,
+        user: {
+          id: user._id,
+          verified: user.verified,
+        },
       });
     }
   } catch (error: any | unknown) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: "Login failed",
+      message: "Fetching user failed",
       error: error.message,
     });
   }

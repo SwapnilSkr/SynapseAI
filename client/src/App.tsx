@@ -9,6 +9,9 @@ import Register from "./pages/Auth/Register";
 import { Login } from "./pages/Auth/Login";
 import DashboardHome from "./pages/Dashboard/DashboardHome";
 import VerificationStatus from "./pages/Auth/VerificationStatus";
+import { useEffect } from "react";
+import { getUserInSessionAction } from "./state/reducers/userReducer";
+import { useAppDispatch } from "./state/hooks";
 
 // 3️⃣ Router singleton created
 const router = createBrowserRouter([
@@ -28,17 +31,16 @@ const router = createBrowserRouter([
       { path: "*", element: <BlogApp /> },
     ],
   },
-  {
-    path: "/blog/*",
-    children: [
-      { index: true, element: <h1>Blog Index</h1> },
-      { path: "*", element: <BlogApp /> },
-    ],
-  },
   { path: "*", element: <Root /> },
 ]);
 
 export default function App() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getUserInSessionAction());
+  }, [dispatch]);
+
   return <RouterProvider router={router} />;
 }
 

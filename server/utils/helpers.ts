@@ -83,7 +83,6 @@ export interface PassportRequest extends Request {
   authMethod?: string;
   passportInternalErr?: Error | null;
   passportAuthErr?: any;
-  creatorUser?: Express.User;
 }
 
 export const combineDocs = (docs: any) => {

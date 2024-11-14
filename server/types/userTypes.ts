@@ -12,4 +12,5 @@ export interface CustomUser extends Express.User {
   email: string;
   firstName?: string;
   lastName?: string;
+  verified?: boolean;
 }
