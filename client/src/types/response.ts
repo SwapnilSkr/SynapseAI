@@ -3,5 +3,6 @@ export type authResponse = {
   user: {
     id: string;
     verified: boolean;
+    resentEmail?: boolean;
   };
 };

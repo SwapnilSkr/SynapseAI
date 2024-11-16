@@ -9,8 +9,16 @@ export type userType = {
 
 export interface CustomUser extends Express.User {
   _id: string;
+  googleId?: string;
   email: string;
   firstName?: string;
   lastName?: string;
   verified?: boolean;
+  resentEmail?: boolean;
+  verificationToken?: string;
+  verificationTokenExpires?: Date;
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

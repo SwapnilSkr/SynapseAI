@@ -33,16 +33,16 @@ export const registerUser = async (req: PassportRequest, res: Response) => {
     const verificationLink = `${process.env.FRONT_END_URL}/verify-email?token=${token}`;
     const emailTemplate = registrationTemplate(verificationLink);
 
-    // mg.messages
-    //   .create(process.env.MAILGUN_SANDBOX_DOMAIN as string, {
-    //     from: process.env.VERIFIED_EMAIL,
-    //     to: [user.email],
-    //     subject: "Email Verification",
-    //     text: "Verify your Email!",
-    //     html: emailTemplate,
-    //   })
-    //   .then((msg) => console.log(msg))
-    //   .catch((err) => console.error(err));
+    mg.messages
+      .create(process.env.MAILGUN_SANDBOX_DOMAIN as string, {
+        from: process.env.VERIFIED_EMAIL,
+        to: [user.email],
+        subject: "Email Verification",
+        text: "Verify your Email!",
+        html: emailTemplate,
+      })
+      .then((msg) => console.log(msg))
+      .catch((err) => console.error(err));
 
     console.log("request", req.session);
     return res.status(StatusCodes.OK).json({
@@ -55,6 +55,62 @@ export const registerUser = async (req: PassportRequest, res: Response) => {
   } catch (error: any | unknown) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: "Sign Up failed",
+      error: error.message,
+    });
+  }
+};
+
+export const resendVerificationEmail = async (
+  req: PassportRequest,
+  res: Response
+) => {
+  try {
+    const user = req.user as CustomUser;
+    const foundUser = await User.findById(user._id);
+
+    if (!foundUser) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "User not found",
+      });
+    }
+
+    if (foundUser.verified) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "User already verified",
+      });
+    }
+
+    const { token, tokenExpires } = generateToken();
+    foundUser.verificationToken = token;
+    foundUser.verificationTokenExpires = tokenExpires;
+    foundUser.resentEmail = true;
+    await foundUser.save();
+
+    const verificationLink = `${process.env.FRONT_END_URL}/verify-email?token=${token}`;
+    const emailTemplate = registrationTemplate(verificationLink);
+
+    mg.messages
+      .create(process.env.MAILGUN_SANDBOX_DOMAIN as string, {
+        from: process.env.VERIFIED_EMAIL,
+        to: [user.email],
+        subject: "Email Verification",
+        text: "Verify your Email!",
+        html: emailTemplate,
+      })
+      .then((msg) => console.log(msg))
+      .catch((err) => console.error(err));
+
+    return res.status(StatusCodes.OK).json({
+      message: "success",
+      user: {
+        id: foundUser._id,
+        verified: foundUser.verified,
+        resentEmail: foundUser.resentEmail,
+      },
+    });
+  } catch (error: any | unknown) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Resend Email Verification failed",
       error: error.message,
     });
   }
@@ -136,6 +192,7 @@ export const getUserInSession = async (req: PassportRequest, res: Response) => {
         user: {
           id: user._id,
           verified: user.verified,
+          resentEmail: user.resentEmail,
         },
       });
     }

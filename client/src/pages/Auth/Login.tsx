@@ -1,5 +1,8 @@
-import { Link } from "react-router-dom";
-
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "@/state/hooks";
+import { loginUserAction } from "@/state/reducers/userReducer";
+import { selectUser } from "@/state/slices/userSlice";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,11 +12,49 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { User } from "@/types/entity";
 
 export function Login() {
+  const dispatch = useAppDispatch();
+  const router = useNavigate();
+  const { user } = useAppSelector(selectUser);
+  const [loginUser, setLoginUser] = useState<User>({
+    email: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      router("/");
+    }
+  }, [user, router]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setLoginUser((user) => {
+      return { ...user, [name]: value };
+    });
+  };
+
+  const resetForm = () => {
+    setLoginUser({
+      email: "",
+      password: "",
+    });
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await dispatch(loginUserAction(loginUser));
+    resetForm();
+  };
+
   return (
     <section className="bg-gray-200 dark:bg-gray-900">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"
+      >
         <Link
           to="/"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
@@ -40,6 +81,8 @@ export function Login() {
                   type="email"
                   name="email"
                   id="email"
+                  value={loginUser.email}
+                  onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-flowPrimary-600 focus:border-flowPrimary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
                   required
@@ -59,6 +102,8 @@ export function Login() {
                   type="password"
                   name="password"
                   id="password"
+                  value={loginUser.password}
+                  onChange={handleChange}
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-flowPrimary-600 focus:border-flowPrimary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
@@ -118,7 +163,7 @@ export function Login() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </form>
     </section>
   );
 }

@@ -24,8 +24,8 @@ router.post(
   "/chat/:agentId/:chatId?",
   authCheckMiddleware,
   upload.fields([
-    { name: "chatFiles", maxCount: 5 }, // Files for chat
-    { name: "voiceMessage", maxCount: 1 }, // Audio file for voice message
+    { name: "chatFiles", maxCount: 5 },
+    { name: "voiceMessage", maxCount: 1 },
   ]),
   chatWIthAIAgent
 );

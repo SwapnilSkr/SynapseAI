@@ -40,6 +40,10 @@ const UserSchema = new mongoose.Schema(
       type: mongoBoolean,
       default: false,
     },
+    resentEmail: {
+      type: mongoBoolean,
+      default: false,
+    },
     verificationToken: {
       type: mongoString,
       default: "",
