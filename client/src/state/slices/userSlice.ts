@@ -3,8 +3,10 @@ import type { RootState } from "../store";
 import {
   getUserInSessionAction,
   loginUserAction,
+  logOutAction,
   resendVerificationEmailAction,
   userRegisterAction,
+  verifyEmailAction,
 } from "../reducers/userReducer";
 
 interface UserState {
@@ -14,7 +16,9 @@ interface UserState {
     verified: boolean;
     resentEmail?: boolean;
   };
+  verifyMessage?: string;
   appErr?: string | undefined;
+  verifyErr?: string | undefined;
   serverErr?: string | undefined;
 }
 
@@ -92,6 +96,40 @@ export const userSlice = createSlice({
       state.serverErr = undefined;
     });
     builder.addCase(loginUserAction.rejected, (state, action) => {
+      state.loading = false;
+      state.appErr = action.payload?.message;
+      state.serverErr = action.error?.message;
+    });
+    //verifyEmailAction
+    builder.addCase(verifyEmailAction.pending, (state) => {
+      state.loading = true;
+      state.verifyErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(verifyEmailAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.verifyMessage = action.payload?.message;
+      state.verifyErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(verifyEmailAction.rejected, (state, action) => {
+      state.loading = false;
+      state.verifyErr = action.payload?.message;
+      state.serverErr = action.error?.message;
+    });
+    //logoutAction
+    builder.addCase(logOutAction.pending, (state) => {
+      state.loading = true;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(logOutAction.fulfilled, (state) => {
+      state.loading = false;
+      state.user = undefined;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(logOutAction.rejected, (state, action) => {
       state.loading = false;
       state.appErr = action.payload?.message;
       state.serverErr = action.error?.message;

@@ -8,10 +8,11 @@ import HomePage from "./pages/HomePage";
 import Register from "./pages/Auth/Register";
 import { Login } from "./pages/Auth/Login";
 import DashboardHome from "./pages/Dashboard/DashboardHome";
-import VerificationStatus from "./pages/Auth/VerificationStatus";
+import EmailSent from "./pages/Auth/EmailSent";
 import { useEffect } from "react";
 import { getUserInSessionAction } from "./state/reducers/userReducer";
 import { useAppDispatch } from "./state/hooks";
+import VerifyEmail from "./pages/Auth/VerifyEmail";
 
 // 3️⃣ Router singleton created
 const router = createBrowserRouter([
@@ -21,7 +22,8 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
-      { path: "verification-status", element: <VerificationStatus /> },
+      { path: "verification-status", element: <EmailSent /> },
+      { path: "verify-email", element: <VerifyEmail /> },
     ],
   },
   {

@@ -44,7 +44,6 @@ export const registerUser = async (req: PassportRequest, res: Response) => {
       .then((msg) => console.log(msg))
       .catch((err) => console.error(err));
 
-    console.log("request", req.session);
     return res.status(StatusCodes.OK).json({
       message: "success",
       user: {
