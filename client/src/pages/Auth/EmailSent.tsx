@@ -65,7 +65,10 @@ export default function EmailSent() {
             <div className="items-center gap-2 mt-3 text-sm sm:flex">
               <Dialog.Close asChild>
                 {user && user.verified ? (
-                  <button className="w-full mt-2 p-2.5 flex-1 text-white bg-indigo-600 rounded-md outline-none  ring-indigo-600 ">
+                  <button
+                    onClick={() => router("/dashboard")}
+                    className="w-full mt-2 p-2.5 flex-1 text-white bg-indigo-600 rounded-md outline-none  ring-indigo-600 "
+                  >
                     Dashboard
                   </button>
                 ) : (

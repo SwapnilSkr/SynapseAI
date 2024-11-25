@@ -120,9 +120,9 @@ export function Login() {
                 <p className="w-[10%] text-center">Or</p>
                 <hr className="w-[40%] border-solid border-[1px] border-gray-200" />
               </div>
-              <Button
-                variant="outline"
-                className="w-full text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+              <a
+                href={`${import.meta.env.VITE_REACT_SERVER_URL}/api/v1/auth/google`}
+                className="w-full flex justify-center text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -131,6 +131,7 @@ export function Login() {
                   width="100"
                   height="100"
                   viewBox="0 0 48 48"
+                  className="w-6 h-6 mr-2"
                 >
                   <path
                     fill="#fbc02d"
@@ -149,8 +150,8 @@ export function Login() {
                     d="M43.611,20.083L43.595,20L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571	c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
                   ></path>
                 </svg>
-                Login with Google
-              </Button>
+                Log In with Google
+              </a>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}

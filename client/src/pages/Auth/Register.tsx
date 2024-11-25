@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/state/hooks";
 import { userRegisterAction } from "@/state/reducers/userReducer";
 import { User } from "@/types/entity";
-import { Button } from "@/components/ui/button";
 import { selectUser } from "@/state/slices/userSlice";
 
 export default function Register() {
@@ -19,7 +18,7 @@ export default function Register() {
 
   useEffect(() => {
     if (user) {
-      router("/");
+      router("/verification-status");
     }
   }, [user, router]);
 
@@ -158,9 +157,9 @@ export default function Register() {
                 <p className="w-[10%] text-center">Or</p>
                 <hr className="w-[40%] border-solid border-[1px] border-gray-200" />
               </div>
-              <Button
-                variant="outline"
-                className="w-full text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+              <a
+                href={`${import.meta.env.VITE_REACT_SERVER_URL}/api/v1/auth/google`}
+                className="w-full flex justify-center text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -169,6 +168,7 @@ export default function Register() {
                   width="100"
                   height="100"
                   viewBox="0 0 48 48"
+                  className="w-6 h-6 mr-2"
                 >
                   <path
                     fill="#fbc02d"
@@ -188,7 +188,7 @@ export default function Register() {
                   ></path>
                 </svg>
                 Sign Up with Google
-              </Button>
+              </a>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Already have an account?{" "}
                 <Link

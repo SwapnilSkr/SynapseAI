@@ -17,7 +17,7 @@ const router = Router();
 
 router.post("/register", passportSignUpMiddleware, registerUser);
 router.post("/login", passportLoginMiddleware, loginUser);
-router.post("resend-verification-email", resendVerificationEmail);
+router.post("/resend-verification-email", resendVerificationEmail);
 router.get("/verify-email", verifyEmail);
 router.get(
   "/google",
@@ -28,8 +28,10 @@ router.get(
 );
 router.get(
   "/google/callback",
-  googlePassport.authenticate("google", { failureRedirect: "/login" }),
-  loginUser
+  googlePassport.authenticate("google", {
+    successRedirect: `${process.env.FRONT_END_URL}/login`,
+    failureRedirect: "/login",
+  })
 );
 router.get("/get-user-in-session", getUserInSession);
 router.get("/logout", logoutUser);

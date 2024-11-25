@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { getUserInSessionAction } from "./state/reducers/userReducer";
 import { useAppDispatch } from "./state/hooks";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
+import PopupClose from "./pages/Auth/PopupClose";
 
 // 3️⃣ Router singleton created
 const router = createBrowserRouter([
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "verification-status", element: <EmailSent /> },
       { path: "verify-email", element: <VerifyEmail /> },
+      { path: "pop-up-close", element: <PopupClose /> },
     ],
   },
   {
