@@ -24,8 +24,10 @@ export function Login() {
   });
 
   useEffect(() => {
-    if (user) {
-      router("/");
+    if (user && !user.verified) {
+      router("/verification-status");
+    } else if (user && user.verified) {
+      router("/dashboard");
     }
   }, [user, router]);
 

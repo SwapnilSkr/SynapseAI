@@ -17,8 +17,10 @@ export default function Register() {
   });
 
   useEffect(() => {
-    if (user) {
+    if (user && !user.verified) {
       router("/verification-status");
+    } else if (user && user.verified) {
+      router("/dashboard");
     }
   }, [user, router]);
 

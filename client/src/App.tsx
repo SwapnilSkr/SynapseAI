@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { getUserInSessionAction } from "./state/reducers/userReducer";
 import { useAppDispatch } from "./state/hooks";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
-import PopupClose from "./pages/Auth/PopupClose";
+import VerificationProtected from "./Protected/VerificationProtected";
 
 // 3️⃣ Router singleton created
 const router = createBrowserRouter([
@@ -23,15 +23,35 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
-      { path: "verification-status", element: <EmailSent /> },
-      { path: "verify-email", element: <VerifyEmail /> },
-      { path: "pop-up-close", element: <PopupClose /> },
+      {
+        path: "verification-status",
+        element: (
+          <VerificationProtected>
+            <EmailSent />
+          </VerificationProtected>
+        ),
+      },
+      {
+        path: "verify-email",
+        element: (
+          <VerificationProtected>
+            <VerifyEmail />
+          </VerificationProtected>
+        ),
+      },
     ],
   },
   {
     path: "/dashboard/*",
     children: [
-      { index: true, element: <DashboardHome /> },
+      {
+        index: true,
+        element: (
+          <VerificationProtected>
+            <DashboardHome />
+          </VerificationProtected>
+        ),
+      },
       { path: "*", element: <BlogApp /> },
     ],
   },
