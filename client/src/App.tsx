@@ -7,7 +7,7 @@ import {
 import HomePage from "./pages/HomePage";
 import Register from "./pages/Auth/Register";
 import { Login } from "./pages/Auth/Login";
-import DashboardHome from "./pages/Dashboard/DashboardHome";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import EmailSent from "./pages/Auth/EmailSent";
 import { useEffect } from "react";
 import { getUserInSessionAction } from "./state/reducers/userReducer";
@@ -16,6 +16,9 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/static/AppSidebar";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import VerificationProtected from "./Protected/VerificationProtected";
+import Home from "./pages/Dashboard/Home";
+import Account from "./pages/Dashboard/Account";
+import UserProtected from "./Protected/UserProtected";
 
 // 3️⃣ Router singleton created
 const router = createBrowserRouter([
@@ -45,19 +48,24 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard/*",
+    element: (
+      <UserProtected>
+        <SidebarProvider>
+          <AppSidebar />
+          <Dashboard>
+            <SidebarTrigger />
+          </Dashboard>
+        </SidebarProvider>
+      </UserProtected>
+    ),
     children: [
       {
         index: true,
-        element: (
-          <VerificationProtected>
-            <SidebarProvider>
-              <AppSidebar />
-              <DashboardHome>
-                <SidebarTrigger />
-              </DashboardHome>
-            </SidebarProvider>
-          </VerificationProtected>
-        ),
+        element: <Home />,
+      },
+      {
+        path: "account",
+        element: <Account />,
       },
       { path: "*", element: <BlogApp /> },
     ],

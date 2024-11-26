@@ -93,7 +93,9 @@ export function AppSidebar() {
                 className="w-[--radix-popper-anchor-width]"
               >
                 <DropdownMenuItem>
-                  <span>Account</span>
+                  <Link to="/dashboard/account" className="w-full h-full">
+                    Account
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <span>Billing</span>
