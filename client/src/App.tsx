@@ -12,6 +12,8 @@ import EmailSent from "./pages/Auth/EmailSent";
 import { useEffect } from "react";
 import { getUserInSessionAction } from "./state/reducers/userReducer";
 import { useAppDispatch } from "./state/hooks";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/static/AppSidebar";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import VerificationProtected from "./Protected/VerificationProtected";
 
@@ -48,7 +50,12 @@ const router = createBrowserRouter([
         index: true,
         element: (
           <VerificationProtected>
-            <DashboardHome />
+            <SidebarProvider>
+              <AppSidebar />
+              <DashboardHome>
+                <SidebarTrigger />
+              </DashboardHome>
+            </SidebarProvider>
           </VerificationProtected>
         ),
       },
